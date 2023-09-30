@@ -6,7 +6,7 @@ public sealed class Employee : IAuditableEntity
         Guid userId,
         Guid companyId,
         string firstName,
-        string lastName)
+        string? lastName = null)
     {
         UserId = userId;
         CompanyId = companyId;
@@ -16,7 +16,7 @@ public sealed class Employee : IAuditableEntity
 
     public Guid Id { get; set; } = Guid.NewGuid();
     public string FirstName { get; private set; }
-    public string LastName { get; private set; }
+    public string? LastName { get; private set; }
     public DateTimeOffset CreatedAt { get; } = default;
     public DateTimeOffset? UpdatedAt { get; } = default;
 

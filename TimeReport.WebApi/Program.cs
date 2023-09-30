@@ -34,7 +34,15 @@ builder.Services.AddDbContext<TimeReportContext>( options =>
 });
 
 builder.Services
-    .AddIdentity<User, IdentityRole<Guid>>()
+    .AddIdentity<User, IdentityRole<Guid>>(opt =>
+    {
+        opt.Password.RequireNonAlphanumeric = false;
+        opt.Password.RequiredLength = 6;
+        opt.Password.RequireUppercase = false;
+        opt.Password.RequireLowercase = false;
+        opt.Password.RequireDigit = false;
+        opt.Password.RequiredUniqueChars = 1;
+    })
     .AddEntityFrameworkStores<TimeReportContext>()
     .AddDefaultTokenProviders();
 
@@ -44,6 +52,7 @@ var app = builder.Build();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseFastEndpoints();
+
+app.UseFastEndpoints(x => x.Errors.ResponseBuilder = ProblemDetails.ResponseBuilder);
 
 app.Run();

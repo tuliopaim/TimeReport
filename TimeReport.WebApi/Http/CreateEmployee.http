@@ -1,0 +1,23 @@
+### Send POST request with json body
+POST http://localhost:5141/api/employee
+Content-Type: application/json
+
+{
+  "userName": "tuliopaim",
+  "firstName": "Túlio",
+  "lastName": "Paim",
+  "password": "123456",
+  "companyId": "51934247-1B34-4443-8636-BFC59C86E411"
+}
+
+### Send POST request with invalid json body
+POST http://localhost:5141/api/employee
+Content-Type: application/json
+
+{
+  "userName": "",
+  "firstName": "Túlioooooooooooooooooooooooooooooooooooooooo",
+  "lastName": "Paim",
+  "companyId": "51934247-1B34-4443-8636-BFC59C86E411"
+}
+
