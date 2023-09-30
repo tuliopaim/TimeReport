@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    hostname: localhost
+    ports:
+        - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+        - time-report-net
+    environment:
+        - POSTGRES_PASSWORD=senhaS3creta
+
+  loki:
+    image: grafana/loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki:/loki
+    networks:
+      - time-report-net
+
+  grafana:
+    image: grafana/grafana:latest
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /etc/grafana/provisioning/datasources
+        cat <<EOF > /etc/grafana/provisioning/datasources/ds.yaml
+        apiVersion: 1
+        datasources:
+        - name: Loki
+          type: loki
+          access: proxy 
+          orgId: 1
+          url: http://loki:3100
+          basicAuth: false
+          isDefault: true
+          version: 1
+          editable: false
+        EOF
+        /run.sh
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana:/var/lib/grafana
+    networks:
+      - time-report-net
+
+networks:
+  time-report-net:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  grafana:
+  loki:
+    
+#  seq-data:
+#  rabbitmq-data:
+#  rabbitmq-log:
+#  minio-data:
+#  minio-config:
+#  rabbitmq:
+#      image: rabbitmq:3.11.10-management
+#      hostname: localhost
+#      ports:
+#          - 5672:5672
+#          - 15672:15672
+#      networks:
+#          - time-report-net
+#      volumes:
+#        - rabbitmq-data:/var/lib/rabbitmq/
+#        - rabbitmq-log:/var/log/rabbitmq
+#
+#  minio:
+#    image: minio/minio:latest
+#    ports:
+#      - 9000:9000
+#      - 9090:9090
+#    environment:
+#      - "MINIO_ROOT_USER=minio"
+#      - "MINIO_ROOT_PASSWORD=miniosecret"
+#    networks:
+#      - time-report-net
+#    volumes:
+#      - minio-data:/data
+#      - minio-config:/root/.minio
+#    command: server --console-address ":9090" /data
