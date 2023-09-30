@@ -19,7 +19,57 @@ public class TimeReportContext :
 
         builder.HasDefaultSchema("time_report");
 
-        builder.Entity<User>().ToTable("user");
+        builder.Entity<User>(b =>
+        {
+            b.ToTable("user");
+
+            b.Property(e => e.CreatedAt).IsRequired();
+            b.Property(e => e.CreatedAt);
+        });
+
+        builder.Entity<Employee>(b =>
+        {
+            b.ToTable("employee");
+
+            b.HasKey(e => e.Id);
+
+            b.Property(e => e.FirstName)
+                .IsRequired()
+                .HasMaxLength(16);
+
+            b.Property(e => e.LastName)
+                .HasMaxLength(32);
+
+            b.Property(e => e.CreatedAt).IsRequired();
+            b.Property(e => e.CreatedAt);
+
+            b.HasOne(x => x.User).WithOne().HasForeignKey<Employee>(e => e.UserId);
+            b.HasOne<Company>().WithMany().HasForeignKey(e => e.CompanyId);
+        });
+
+        builder.Entity<Company>(b =>
+        {
+            b.ToTable("company");
+
+            b.HasKey(e => e.Id);
+
+            b.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(32);
+
+            b.Property(e => e.CreatedAt).IsRequired();
+            b.Property(e => e.CreatedAt);
+
+            b.HasData(
+                new Company("Company 1")
+                {
+                    Id = Guid.Parse("51934247-1B34-4443-8636-BFC59C86E411"),
+                },
+                new Company("Company 2")
+                {
+                    Id = Guid.Parse("74CEE1A7-7C55-4148-B6ED-FAD5DB38459B"),
+                });
+        });
 
         builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }

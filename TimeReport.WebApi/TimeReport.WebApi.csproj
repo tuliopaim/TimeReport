@@ -15,10 +15,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Features\" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="FastEndpoints" Version="5.17.1.1" />
         <PackageReference Include="FastEndpoints.Security" Version="5.17.1.1" />
         <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.11" />

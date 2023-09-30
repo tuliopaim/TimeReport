@@ -220,9 +220,85 @@ namespace TimeReport.Migrations
                     b.ToTable("AspNetUserTokens", "time_report");
                 });
 
+            modelBuilder.Entity("TimeReport.Entities.Company", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("company", "time_report");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("51934247-1b34-4443-8636-bfc59c86e411"),
+                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Company 1"
+                        },
+                        new
+                        {
+                            Id = new Guid("74cee1a7-7c55-4148-b6ed-fad5db38459b"),
+                            CreatedAt = new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)),
+                            Name = "Company 2"
+                        });
+                });
+
+            modelBuilder.Entity("TimeReport.Entities.Employee", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("employee", "time_report");
+                });
+
             modelBuilder.Entity("TimeReport.Entities.User", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser<System.Guid>");
+
+                    b.Property<Guid?>("CompanyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasIndex("CompanyId");
 
                     b.ToTable("user", "time_report");
                 });
@@ -278,13 +354,39 @@ namespace TimeReport.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TimeReport.Entities.Employee", b =>
+                {
+                    b.HasOne("TimeReport.Entities.Company", null)
+                        .WithMany()
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TimeReport.Entities.User", "User")
+                        .WithOne()
+                        .HasForeignKey("TimeReport.Entities.Employee", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("TimeReport.Entities.User", b =>
                 {
+                    b.HasOne("TimeReport.Entities.Company", null)
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId");
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser<System.Guid>", null)
                         .WithOne()
                         .HasForeignKey("TimeReport.Entities.User", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TimeReport.Entities.Company", b =>
+                {
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }
