@@ -46,7 +46,7 @@ builder.Services
     .AddEntityFrameworkStores<TimeReportContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddJWTBearerAuth(builder.Configuration["JWT:Secret"]!);
+builder.Services.AddJWTBearerAuth(builder.Configuration["JWT:Key"]!);
 
 var app = builder.Build();
 

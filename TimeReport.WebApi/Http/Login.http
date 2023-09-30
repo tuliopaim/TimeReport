@@ -1,0 +1,9 @@
+### Login
+
+POST http://localhost:5141/api/login
+Content-Type: application/json
+
+{
+  "userName": "tuliopaim",
+  "password": "123456"
+}
