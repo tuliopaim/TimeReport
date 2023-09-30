@@ -11,5 +11,6 @@ public class CreateEmployeeValidator : Validator<CreateEmployeeRequest>
         RuleFor(x => x.LastName).MaximumLength(32);
         RuleFor(x => x.Password).MinimumLength(3).NotEmpty();
         RuleFor(x => x.CompanyId).NotEmpty();
+        RuleFor(x => x.Type).IsInEnum();
     }
 }

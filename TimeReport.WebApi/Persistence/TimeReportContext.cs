@@ -6,12 +6,15 @@ using TimeReport.Entities;
 namespace TimeReport.Persistence;
 
 public class TimeReportContext :
-    IdentityDbContext<IdentityUser<Guid>, IdentityRole<Guid>, Guid>
+    IdentityDbContext<User, IdentityRole<Guid>, Guid>
 {
     public TimeReportContext(DbContextOptions<TimeReportContext> options)
         : base(options)
     {
     }
+
+    public DbSet<Employee> Employees => Set<Employee>();
+    public DbSet<Company> Companies => Set<Company>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -37,8 +40,9 @@ public class TimeReportContext :
                 .IsRequired()
                 .HasMaxLength(16);
 
-            b.Property(e => e.LastName)
-                .HasMaxLength(32);
+            b.Property(e => e.LastName).HasMaxLength(32);
+
+            b.Property(e => e.Type).IsRequired();
 
             b.Property(e => e.CreatedAt).IsRequired();
             b.Property(e => e.CreatedAt);

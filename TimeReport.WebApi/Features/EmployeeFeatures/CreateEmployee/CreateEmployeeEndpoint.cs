@@ -10,15 +10,18 @@ public class CreateEmployeeEndpoint
         CreateEmployeeRequest,
         Results<Ok<Guid>, ProblemDetails>>
 {
+    private readonly ILogger<CreateEmployeeEndpoint> _logger;
     private readonly TimeReportContext _timeReportContext;
     private readonly UserManager<User> _userManager;
 
     public CreateEmployeeEndpoint(
+        ILogger<CreateEmployeeEndpoint> logger,
         TimeReportContext timeReportContext,
         UserManager<User> userManager)
     {
         _timeReportContext = timeReportContext;
         _userManager = userManager;
+        _logger = logger;
     }
 
     public override void Configure()
@@ -41,6 +44,7 @@ public class CreateEmployeeEndpoint
 
         if (!result.Succeeded)
         {
+            _logger.LogInformation("Error creating user {Username}", req.Username);
             return Errors(result, ct);
         }
 
@@ -48,7 +52,8 @@ public class CreateEmployeeEndpoint
             user.Id,
             req.CompanyId!.Value,
             req.FirstName!,
-            req.LastName!);
+            req.LastName!,
+            req.Type!.Value);
 
         _timeReportContext.Add(employee);
 

@@ -1,9 +1,25 @@
 using FastEndpoints.Security;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using TimeReport.Entities;
+using TimeReport.Persistence;
 
 namespace TimeReport.Features.AuthFeatures.Login;
+
+public record LoginRequest(
+    string Username,
+    string Password);
+
+public class LoginValidator : Validator<LoginRequest>
+{
+    public LoginValidator()
+    {
+        RuleFor(x => x.Username).MaximumLength(16).NotEmpty();
+        RuleFor(x => x.Password).MinimumLength(3).NotEmpty();
+    }
+}
 
 public record LoginResponse(
     string Token,
@@ -11,13 +27,16 @@ public record LoginResponse(
 
 public class LoginEndpoint : Endpoint<LoginRequest, Results<Ok<LoginResponse>, ProblemDetails>>
 {
+    private readonly TimeReportContext _context;
     private readonly SignInManager<User> _signInManager;
     private readonly IConfiguration _configuration;
 
     public LoginEndpoint(
+        TimeReportContext context,
         SignInManager<User> signInManager,
         IConfiguration configuration)
     {
+        _context = context;
         _signInManager = signInManager;
         _configuration = configuration;
     }
@@ -32,33 +51,68 @@ public class LoginEndpoint : Endpoint<LoginRequest, Results<Ok<LoginResponse>, P
         LoginRequest req,
         CancellationToken ct)
     {
-        var user = await _signInManager.UserManager.FindByNameAsync(req.Username);
+        var userInfo = await GetUserInfo(req, ct);
 
-        if (user is null)
+        if (userInfo is null)
         {
             AddError("User not found", "UserNotFound");
             return new ProblemDetails(ValidationFailures);
         }
 
-        var loginResult = await _signInManager.CheckPasswordSignInAsync(user, req.Password, false);
-        if (!loginResult.Succeeded)
+        var loginResult = await _signInManager
+            .PasswordSignInAsync(req.Username, req.Password, false, false);
+
+       if (!loginResult.Succeeded)
         {
             AddError("Invalid credentials", "InvalidCredentials");
             return new ProblemDetails(ValidationFailures);
         }
 
         var validTo = DateTimeOffset.UtcNow.AddHours(1);
+
+        var jwtToken = CreateToken(req, userInfo, validTo);
+
+        return TypedResults.Ok(new LoginResponse(jwtToken, validTo));
+    }
+
+    private string CreateToken(
+        LoginRequest req,
+        UserInfo userInfo,
+        DateTimeOffset validTo)
+    {
         var jwtToken = JWTBearer.CreateToken(
             _configuration["Jwt:Key"]!,
             u =>
             {
-                u["UserID"] = user.Id;
+                u.Roles.Add(userInfo.Type.ToString());
                 u["UserName"] = req.Username;
+                u["UserID"] = userInfo.UserId.ToString();
+                u["CompanyId"] = userInfo.CompanyId.ToString();
             },
             "TimeReport",
             "TimeReport",
             validTo.DateTime);
+        return jwtToken;
+    }
 
-        return TypedResults.Ok(new LoginResponse(jwtToken, validTo));
+    private async Task<UserInfo?> GetUserInfo(LoginRequest req, CancellationToken ct)
+    {
+        return await _context
+            .Employees
+            .Where(u => u.User.UserName == req.Username)
+            .Select(x => new UserInfo
+            {
+                UserId = x.UserId,
+                CompanyId = x.CompanyId,
+                Type = x.Type
+            })
+            .FirstOrDefaultAsync(ct);
+    }
+
+    private class UserInfo
+    {
+        public Guid UserId { get; set; }
+        public Guid CompanyId { get; set; }
+        public EmployeeType Type { get; set; }
     }
 }

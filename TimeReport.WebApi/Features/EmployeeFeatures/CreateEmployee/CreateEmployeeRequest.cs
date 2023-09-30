@@ -1,3 +1,5 @@
+using TimeReport.Entities;
+
 namespace TimeReport.Features.EmployeeFeatures.CreateEmployee;
 
 public record CreateEmployeeRequest(
@@ -5,4 +7,5 @@ public record CreateEmployeeRequest(
     string? FirstName,
     string? LastName,
     string? Password,
-    Guid? CompanyId);
+    Guid? CompanyId,
+    EmployeeType? Type);
