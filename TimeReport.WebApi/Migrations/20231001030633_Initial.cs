@@ -39,11 +39,40 @@ namespace TimeReport.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_company", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "user",
+                schema: "time_report",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_user", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -67,40 +96,6 @@ namespace TimeReport.Migrations
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "user",
-                schema: "time_report",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CompanyId = table.Column<Guid>(type: "uuid", nullable: true),
-                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_user", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_user_company_CompanyId",
-                        column: x => x.CompanyId,
-                        principalSchema: "time_report",
-                        principalTable: "company",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -207,6 +202,7 @@ namespace TimeReport.Migrations
                     LastName = table.Column<string>(type: "character varying(32)", maxLength: 32, nullable: true),
                     Type = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
@@ -229,14 +225,37 @@ namespace TimeReport.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "time-entry",
+                schema: "time_report",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Time = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    EmployeeId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_time-entry", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_time-entry_employee_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalSchema: "time_report",
+                        principalTable: "employee",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 schema: "time_report",
                 table: "company",
-                columns: new[] { "Id", "CreatedAt", "Name" },
+                columns: new[] { "Id", "CreatedAt", "Name", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { new Guid("51934247-1b34-4443-8636-bfc59c86e411"), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), "Company 1" },
-                    { new Guid("74cee1a7-7c55-4148-b6ed-fad5db38459b"), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), "Company 2" }
+                    { new Guid("51934247-1b34-4443-8636-bfc59c86e411"), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), "Company 1", null },
+                    { new Guid("74cee1a7-7c55-4148-b6ed-fad5db38459b"), new DateTimeOffset(new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 0, 0, 0, 0)), "Company 2", null }
                 });
 
             migrationBuilder.CreateIndex(
@@ -284,16 +303,28 @@ namespace TimeReport.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_time-entry_EmployeeId",
+                schema: "time_report",
+                table: "time-entry",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_time-entry_Id_Time",
+                schema: "time_report",
+                table: "time-entry",
+                columns: new[] { "Id", "Time" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_time-entry_Time",
+                schema: "time_report",
+                table: "time-entry",
+                column: "Time");
+
+            migrationBuilder.CreateIndex(
                 name: "EmailIndex",
                 schema: "time_report",
                 table: "user",
                 column: "NormalizedEmail");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_user_CompanyId",
-                schema: "time_report",
-                table: "user",
-                column: "CompanyId");
 
             migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
@@ -327,7 +358,7 @@ namespace TimeReport.Migrations
                 schema: "time_report");
 
             migrationBuilder.DropTable(
-                name: "employee",
+                name: "time-entry",
                 schema: "time_report");
 
             migrationBuilder.DropTable(
@@ -335,11 +366,15 @@ namespace TimeReport.Migrations
                 schema: "time_report");
 
             migrationBuilder.DropTable(
-                name: "user",
+                name: "employee",
                 schema: "time_report");
 
             migrationBuilder.DropTable(
                 name: "company",
+                schema: "time_report");
+
+            migrationBuilder.DropTable(
+                name: "user",
                 schema: "time_report");
         }
     }

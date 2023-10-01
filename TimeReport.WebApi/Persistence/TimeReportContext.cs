@@ -15,6 +15,7 @@ public class TimeReportContext :
 
     public DbSet<Employee> Employees => Set<Employee>();
     public DbSet<Company> Companies => Set<Company>();
+    public DbSet<TimeEntry> TimeEntries => Set<TimeEntry>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -27,7 +28,7 @@ public class TimeReportContext :
             b.ToTable("user");
 
             b.Property(e => e.CreatedAt).IsRequired();
-            b.Property(e => e.CreatedAt);
+            b.Property(e => e.UpdatedAt);
         });
 
         builder.Entity<Employee>(b =>
@@ -45,7 +46,7 @@ public class TimeReportContext :
             b.Property(e => e.Type).IsRequired();
 
             b.Property(e => e.CreatedAt).IsRequired();
-            b.Property(e => e.CreatedAt);
+            b.Property(e => e.UpdatedAt);
 
             b.HasOne(x => x.User).WithOne().HasForeignKey<Employee>(e => e.UserId);
             b.HasOne(x => x.Company).WithMany(x => x.Employees).HasForeignKey(e => e.CompanyId);
@@ -63,7 +64,7 @@ public class TimeReportContext :
                 .HasMaxLength(32);
 
             b.Property(e => e.CreatedAt).IsRequired();
-            b.Property(e => e.CreatedAt);
+            b.Property(e => e.UpdatedAt);
 
             b.HasData(
                 new Company("Company 1")
@@ -81,6 +82,9 @@ public class TimeReportContext :
             b.ToTable("time-entry");
 
             b.HasKey(e => e.Id);
+
+            b.Property(e => e.CreatedAt).IsRequired();
+            b.Property(e => e.UpdatedAt);
 
             b.HasIndex(x => x.Time);
             b.HasIndex(x => new { x.Id, x.Time });
