@@ -12,7 +12,11 @@ public sealed class Company : IAuditableEntity
     public DateTimeOffset CreatedAt { get; } = default;
     public DateTimeOffset? UpdatedAt { get; } = default;
 
-    private readonly List<User> _users = new();
+    private readonly List<Employee> _employees = new();
+    public IReadOnlyList<Employee> Employees => _employees;
 
-    public IReadOnlyList<User> Users => _users;
+    public void AddEmployee(Employee employee)
+    {
+        _employees.Add(employee);
+    }
 }

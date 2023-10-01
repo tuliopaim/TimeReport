@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TimeReport.Persistence;
@@ -11,9 +12,11 @@ using TimeReport.Persistence;
 namespace TimeReport.Migrations
 {
     [DbContext(typeof(TimeReportContext))]
-    partial class TimeReportContextModelSnapshot : ModelSnapshot
+    [Migration("20231001000216_AddTimeEntryEntity")]
+    partial class AddTimeEntryEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

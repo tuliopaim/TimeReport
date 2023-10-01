@@ -48,7 +48,8 @@ public class TimeReportContext :
             b.Property(e => e.CreatedAt);
 
             b.HasOne(x => x.User).WithOne().HasForeignKey<Employee>(e => e.UserId);
-            b.HasOne<Company>().WithMany().HasForeignKey(e => e.CompanyId);
+            b.HasOne(x => x.Company).WithMany(x => x.Employees).HasForeignKey(e => e.CompanyId);
+            b.HasMany(x => x.TimeEntries).WithOne(x => x.Employee).HasForeignKey(x => x.EmployeeId);
         });
 
         builder.Entity<Company>(b =>
@@ -73,6 +74,16 @@ public class TimeReportContext :
                 {
                     Id = Guid.Parse("74CEE1A7-7C55-4148-B6ED-FAD5DB38459B"),
                 });
+        });
+
+        builder.Entity<TimeEntry>(b =>
+        {
+            b.ToTable("time-entry");
+
+            b.HasKey(e => e.Id);
+
+            b.HasIndex(x => x.Time);
+            b.HasIndex(x => new { x.Id, x.Time });
         });
 
         builder.ApplyConfigurationsFromAssembly(GetType().Assembly);
