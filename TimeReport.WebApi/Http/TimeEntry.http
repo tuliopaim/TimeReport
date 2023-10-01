@@ -1,0 +1,17 @@
+### Create a new time entry without time
+POST http://localhost:5141/api/time-entry
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyTmFtZSI6InR1bGlvcGFpbSIsIlVzZXJJZCI6IjNiMWQxYzdmLTZjMWUtNGE4Ni05YTMzLWNhYzY2NTlkNDQzMCIsIkNvbXBhbnlJZCI6IjUxOTM0MjQ3LTFiMzQtNDQ0My04NjM2LWJmYzU5Yzg2ZTQxMSIsInJvbGUiOiJSZWd1bGFyIiwibmJmIjoxNjk2MTI5ODU3LCJleHAiOjE2OTYxNDQyNTcsImlhdCI6MTY5NjEyOTg1NywiaXNzIjoiVGltZVJlcG9ydCIsImF1ZCI6IlRpbWVSZXBvcnQifQ.LUxjI6qYKQWQRh6npEscS9jPN1dGyvRyZ8HO9UJVQjc
+
+{
+  
+}
+
+### Create a new time entry with time
+POST http://localhost:5141/api/time-entry
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VyTmFtZSI6InR1bGlvcGFpbSIsIlVzZXJJZCI6IjNiMWQxYzdmLTZjMWUtNGE4Ni05YTMzLWNhYzY2NTlkNDQzMCIsIkNvbXBhbnlJZCI6IjUxOTM0MjQ3LTFiMzQtNDQ0My04NjM2LWJmYzU5Yzg2ZTQxMSIsInJvbGUiOiJSZWd1bGFyIiwibmJmIjoxNjk2MTI5ODU3LCJleHAiOjE2OTYxNDQyNTcsImlhdCI6MTY5NjEyOTg1NywiaXNzIjoiVGltZVJlcG9ydCIsImF1ZCI6IlRpbWVSZXBvcnQifQ.LUxjI6qYKQWQRh6npEscS9jPN1dGyvRyZ8HO9UJVQjc
+
+{
+  "time": "2023-10-01T03:00:00.000Z"
+}
