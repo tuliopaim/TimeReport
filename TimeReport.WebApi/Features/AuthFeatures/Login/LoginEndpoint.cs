@@ -5,18 +5,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TimeReport.Entities;
 using TimeReport.Persistence;
+using TimeReport.Shared;
 
 namespace TimeReport.Features.AuthFeatures.Login;
 
 public record LoginRequest(
-    string Username,
+    string UserName,
     string Password);
 
 public class LoginValidator : Validator<LoginRequest>
 {
     public LoginValidator()
     {
-        RuleFor(x => x.Username).MaximumLength(16).NotEmpty();
+        RuleFor(x => x.UserName).MaximumLength(16).NotEmpty();
         RuleFor(x => x.Password).MinimumLength(3).NotEmpty();
     }
 }
@@ -60,7 +61,7 @@ public class LoginEndpoint : Endpoint<LoginRequest, Results<Ok<LoginResponse>, P
         }
 
         var loginResult = await _signInManager
-            .PasswordSignInAsync(req.Username, req.Password, false, false);
+            .PasswordSignInAsync(req.UserName, req.Password, false, false);
 
        if (!loginResult.Succeeded)
         {
@@ -85,9 +86,9 @@ public class LoginEndpoint : Endpoint<LoginRequest, Results<Ok<LoginResponse>, P
             u =>
             {
                 u.Roles.Add(userInfo.Type.ToString());
-                u["UserName"] = req.Username;
-                u["UserID"] = userInfo.UserId.ToString();
-                u["CompanyId"] = userInfo.CompanyId.ToString();
+                u[Constants.Claims.UserName] = req.UserName;
+                u[Constants.Claims.UserId] = userInfo.UserId.ToString();
+                u[Constants.Claims.CompanyId] = userInfo.CompanyId.ToString();
             },
             "TimeReport",
             "TimeReport",
@@ -99,7 +100,7 @@ public class LoginEndpoint : Endpoint<LoginRequest, Results<Ok<LoginResponse>, P
     {
         return await _context
             .Employees
-            .Where(u => u.User.UserName == req.Username)
+            .Where(u => u.User!.UserName == req.UserName)
             .Select(x => new UserInfo
             {
                 UserId = x.UserId,

@@ -1,10 +1,12 @@
 global using FastEndpoints;
 using FastEndpoints.Security;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using TimeReport.Entities;
 using TimeReport.Persistence;
+using TimeReport.Shared;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,8 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddFastEndpoints();
 
 Log.Logger = new LoggerConfiguration()
@@ -25,6 +29,9 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 builder.Host.UseSerilog();
+
+builder.Services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 builder.Services.AddDbContext<TimeReportContext>( options =>
 {
@@ -47,6 +54,11 @@ builder.Services
     .AddDefaultTokenProviders();
 
 builder.Services.AddJWTBearerAuth(builder.Configuration["JWT:Key"]!);
+
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+});
 
 var app = builder.Build();
 
