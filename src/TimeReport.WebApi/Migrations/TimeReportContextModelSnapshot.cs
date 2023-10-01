@@ -201,6 +201,9 @@ namespace TimeReport.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<short>("DailyHours")
+                        .HasColumnType("smallint");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasMaxLength(16)

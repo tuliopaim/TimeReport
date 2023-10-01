@@ -53,6 +53,7 @@ public class CreateEmployeeEndpoint
             req.CompanyId!.Value,
             req.FirstName!,
             req.LastName!,
+            req.DailyHours,
             req.Type!.Value);
 
         _timeReportContext.Add(employee);

@@ -2,6 +2,10 @@ namespace TimeReport.Entities;
 
 public class TimeEntry : IAuditableEntity
 {
+    public TimeEntry()
+    {
+    }
+
     public TimeEntry(Guid employeeId, DateTimeOffset time)
     {
         EmployeeId = employeeId;

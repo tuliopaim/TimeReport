@@ -8,7 +8,8 @@ Content-Type: application/json
   "lastName": "Paim",
   "password": "123456",
   "type": 0,
-  "companyId": "51934247-1B34-4443-8636-BFC59C86E411"
+  "companyId": "51934247-1B34-4443-8636-BFC59C86E411",
+  "dailyHours": 8
 }
 
 ### Send POST request with invalid json body
@@ -19,6 +20,7 @@ Content-Type: application/json
   "userName": "",
   "firstName": "Túlioooooooooooooooooooooooooooooooooooooooo",
   "lastName": "Paim",
-  "companyId": "51934247-1B34-4443-8636-BFC59C86E411"
+  "companyId": "51934247-1B34-4443-8636-BFC59C86E411",
+  "dailyHours": 0
 }
 

@@ -2,6 +2,10 @@ namespace TimeReport.Entities;
 
 public sealed class Company : IAuditableEntity
 {
+    public Company()
+    {
+    }
+
     public Company(string name)
     {
         Name = name;

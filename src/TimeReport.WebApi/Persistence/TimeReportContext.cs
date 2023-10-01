@@ -43,6 +43,8 @@ public class TimeReportContext :
 
             b.Property(e => e.LastName).HasMaxLength(32);
 
+            b.Property(e => e.DailyHours).IsRequired();
+
             b.Property(e => e.Type).IsRequired();
 
             b.Property(e => e.CreatedAt).IsRequired();

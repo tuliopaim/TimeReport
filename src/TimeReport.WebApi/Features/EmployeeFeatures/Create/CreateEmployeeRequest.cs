@@ -8,4 +8,5 @@ public record CreateEmployeeRequest(
     string? LastName,
     string? Password,
     Guid? CompanyId,
-    EmployeeType? Type);
+    EmployeeType? Type,
+    short? DailyHours);

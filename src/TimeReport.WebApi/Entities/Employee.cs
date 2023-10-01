@@ -2,11 +2,16 @@ namespace TimeReport.Entities;
 
 public sealed class Employee : IAuditableEntity
 {
+    public Employee()
+    {
+    }
+
     public Employee(
         Guid userId,
         Guid companyId,
         string firstName,
         string? lastName = null,
+        short? dailyHours = 8,
         EmployeeType type = EmployeeType.Regular)
     {
         Id = userId;
@@ -14,6 +19,7 @@ public sealed class Employee : IAuditableEntity
         CompanyId = companyId;
         FirstName = firstName;
         LastName = lastName;
+        DailyHours = dailyHours ?? 8;
         Type = type;
     }
 
@@ -21,6 +27,7 @@ public sealed class Employee : IAuditableEntity
     public string FirstName { get; private set; }
     public string? LastName { get; private set; }
     public EmployeeType Type { get; private set; }
+    public short DailyHours { get; private set; }
     public DateTimeOffset CreatedAt { get; } = default;
     public DateTimeOffset? UpdatedAt { get; } = default;
 
