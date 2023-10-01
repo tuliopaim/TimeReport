@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using TimeReport.Entities;
 using TimeReport.Persistence;
 
-namespace TimeReport.Features.EmployeeFeatures.CreateEmployee;
+namespace TimeReport.Features.EmployeeFeatures.Create;
 
 public class CreateEmployeeEndpoint
     : Endpoint<

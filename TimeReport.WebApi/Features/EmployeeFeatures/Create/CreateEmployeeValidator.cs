@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace TimeReport.Features.EmployeeFeatures.CreateEmployee;
+namespace TimeReport.Features.EmployeeFeatures.Create;
 
 public class CreateEmployeeValidator : Validator<CreateEmployeeRequest>
 {

@@ -1,6 +1,6 @@
 using TimeReport.Entities;
 
-namespace TimeReport.Features.EmployeeFeatures.CreateEmployee;
+namespace TimeReport.Features.EmployeeFeatures.Create;
 
 public record CreateEmployeeRequest(
     string? Username,
