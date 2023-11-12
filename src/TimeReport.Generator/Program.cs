@@ -101,7 +101,7 @@ public class Repository
                       select unnest(@Ids::uuid[]), unnest(@Times::timestamptz[]), unnest(@CreatedDates::timestamptz[]), unnest(@EmployeeIds::uuid[])
             """;
 
-        cmd.Parameters.AddWithValue("Ids", NpgsqlDbType.Array | NpgsqlDbType.Uuid, ids);
+        cmd.Parameters.AddWithValue("Ids", NpgsqlDbType.Uuid | NpgsqlDbType.Array, ids);
         cmd.Parameters.AddWithValue("Times", NpgsqlDbType.Array | NpgsqlDbType.TimestampTz, times);
         cmd.Parameters.AddWithValue("CreatedDates", NpgsqlDbType.Array | NpgsqlDbType.TimestampTz, createdDates);
         cmd.Parameters.AddWithValue("EmployeeIds", NpgsqlDbType.Array | NpgsqlDbType.Uuid, employeeIds);

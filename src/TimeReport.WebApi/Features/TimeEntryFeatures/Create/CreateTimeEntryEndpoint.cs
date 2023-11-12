@@ -54,7 +54,8 @@ public class CreateTimeEntryEndpoint : Endpoint<CreateTimeEntryRequest, Results<
             throw new InvalidOperationException("User is not logged in");
         }
 
-        var employeeExist = await _timeReportContext.Employees.AnyAsync(x => x.Id == employeeId, ct);
+        var employeeExist = await _timeReportContext.Employees
+            .AnyAsync(x => x.Id == employeeId, ct);
 
         if (!employeeExist)
         {

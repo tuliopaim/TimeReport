@@ -44,7 +44,10 @@ public class CreateEmployeeEndpoint
 
         if (!result.Succeeded)
         {
-            _logger.LogInformation("Error creating user {Username}", req.Username);
+            _logger.LogError("Error creating user {Username}: {@Errors}",
+                req.Username,
+                result.Errors);
+
             return Errors(result, ct);
         }
 
