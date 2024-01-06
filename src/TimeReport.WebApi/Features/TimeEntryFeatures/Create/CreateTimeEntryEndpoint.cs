@@ -47,12 +47,7 @@ public class CreateTimeEntryEndpoint : Endpoint<CreateTimeEntryRequest, Results<
 
     public override async Task<Results<NoContent, ProblemDetails>> ExecuteAsync(CreateTimeEntryRequest req, CancellationToken ct)
     {
-        var employeeId = _currentUser.UserId;
-
-        if (employeeId == null)
-        {
-            throw new InvalidOperationException("User is not logged in");
-        }
+        var employeeId = _currentUser.UserId ?? throw new InvalidOperationException("User is not logged in");
 
         var employeeExist = await _timeReportContext.Employees
             .AnyAsync(x => x.Id == employeeId, ct);
@@ -67,7 +62,7 @@ public class CreateTimeEntryEndpoint : Endpoint<CreateTimeEntryRequest, Results<
 
         var time = req.Time ?? _dateTimeProvider.UtcNow;
 
-        var timeEntry = new TimeEntry(employeeId.Value, time);
+        var timeEntry = new TimeEntry(employeeId, time);
 
         _timeReportContext.Add(timeEntry);
 
